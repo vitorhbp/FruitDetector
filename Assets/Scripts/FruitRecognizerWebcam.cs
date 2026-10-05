@@ -31,11 +31,26 @@ public class FruitRecognizerWebcam : MonoBehaviour
         webcam = new WebCamTexture(WebCamTexture.devices[0].name, 1280, 720);
         webcam.Play();
         webcamView.texture = webcam;
+        webcamView.uvRect = new Rect(0f, 0f, 1f, 1f);
 
         worker = new Worker(ModelLoader.Load(modelAsset), BackendType.CPU);
         cropRT = new RenderTexture(Size, Size, 0, RenderTextureFormat.ARGB32);
         frameTex = new Texture2D(Size, Size, TextureFormat.RGBA32, false);
         infoText.text = "Mostre uma fruta no centro da câmera";
+    }
+
+    void OnEnable()
+    {
+        if (webcam == null) return;
+        webcam.Play();
+        webcamView.texture = webcam;
+        webcamView.uvRect = new Rect(0f, 0f, 1f, 1f);
+        infoText.text = "MobileNetV2 ativo. Mostre uma fruta!";
+    }
+
+    void OnDisable()
+    {
+        if (webcam != null && webcam.isPlaying) webcam.Stop();
     }
 
     void OnDestroy()

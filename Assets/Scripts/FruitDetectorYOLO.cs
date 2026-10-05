@@ -78,6 +78,19 @@ public class FruitDetectorYOLO : MonoBehaviour
             Functional.IndexSelect(scores, 0, keep)), backend);
     }
 
+    void OnEnable()
+    {
+        if (webcam == null) return;
+        webcam.Play();
+        webcamView.texture = webcam;
+        infoText.text = "YOLO11n ativo. Mostre uma banana, maçã ou laranja";
+    }
+
+    void OnDisable()
+    {
+        foreach (var b in boxes) if (b.root) b.root.gameObject.SetActive(false);
+        if (webcam != null && webcam.isPlaying) webcam.Stop();
+    }
     void OnDestroy()
     {
         worker?.Dispose();
